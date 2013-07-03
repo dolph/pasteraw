@@ -17,12 +17,9 @@ def login():
     if flask.request.method == 'POST':
         if flask.request.form['username']:
             flask.session['username'] = flask.request.form['username']
-            login_url = flask.url_for(
-                'show_user_profile',
-                username=flask.request.form['username'])
             flask.flash(
                 'Welcome, %s' % flask.escape(flask.session['username']))
-            return flask.redirect(login_url)
+            return flask.redirect(flask.url_for('index'))
         else:
             app.logger.warning('Invalid login')
             error = 'Invalid username'
