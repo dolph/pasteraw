@@ -11,12 +11,6 @@ def index():
     return flask.render_template('index.html')
 
 
-@app.route('/user/<username>')
-def show_user_profile(username):
-    # show the user profile for that user
-    return 'User %s' % username
-
-
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     error = None
