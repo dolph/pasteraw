@@ -12,7 +12,7 @@ def index():
 
 @app.route('/hello')
 def hello():
-    return 'Hello World'
+    return flask.render_template('hello.html')
 
 
 @app.route('/user/<username>')
