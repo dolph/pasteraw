@@ -21,5 +21,10 @@ def show_user_profile(username):
     return 'User %s' % username
 
 
+@app.errorhandler(404)
+def not_found(error):
+    return flask.render_template('not_found.html'), 404
+
+
 if __name__ == '__main__':
     app.run()
