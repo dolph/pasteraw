@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h1>Overview</h1>
+    {% if session.get('username') %}
+        <p>Do you want to <a href="{{ url_for('logout') }}">log out?</a>
+    {% else %}
+        <p>Do you want to <a href="{{ url_for('login') }}">log in?</a>
+    {% endif %}
+{% endblock %}

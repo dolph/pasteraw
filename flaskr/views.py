@@ -8,9 +8,7 @@ app.secret_key = __name__
 
 @app.route('/')
 def index():
-    if 'username' in flask.session:
-        return 'Logged in as %s' % flask.escape(flask.session['username'])
-    return 'You are not logged in'
+    return flask.render_template('index.html')
 
 
 @app.route('/user/<username>')
