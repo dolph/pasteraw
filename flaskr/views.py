@@ -13,11 +13,6 @@ def index():
     return 'You are not logged in'
 
 
-@app.route('/hello')
-def hello():
-    return flask.render_template('hello.html')
-
-
 @app.route('/user/<username>')
 def show_user_profile(username):
     # show the user profile for that user
