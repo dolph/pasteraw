@@ -21,7 +21,6 @@ def login():
                 'Welcome, %s' % flask.escape(flask.session['username']))
             return flask.redirect(flask.url_for('index'))
         else:
-            app.logger.warning('Invalid login')
             error = 'Invalid username'
 
     # the code below is executed if the request method
