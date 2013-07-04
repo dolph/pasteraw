@@ -1,0 +1,61 @@
+body {
+    background: #eee;
+    font-family: sans-serif;
+}
+a,
+h1,
+h2 {
+    color: #377ba8
+}
+h1,
+h2 {
+    font-family: Georgia, serif;
+    margin: 0;
+}
+h1 {
+    border-bottom: 2px solid #eee
+}
+h2 {
+    font-size: 1.2em
+}
+.page {
+    background: #FFF;
+    border: 5px solid #ccc;
+    width: 35em;
+    margin: 2em auto;
+    padding: .8em;
+}
+.entries {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.entries li {
+    margin: .8em 1.2em
+ }
+.entries li h2 {
+    margin-left: -1em
+}
+.add-entry {
+    border-bottom: 1px solid #ccc;
+    font-size: .9em;
+}
+.add-entry dl {
+    font-weight: 700
+}
+.metanav {
+    background: #fafafa;
+    font-size: .8em;
+    margin-bottom: 1em;
+    text-align: right;
+    padding: .3em;
+}
+.flash {
+    background: #cee5F5;
+    border: 1px solid #aacbe2;
+    padding: .5em;
+}
+.error {
+    background: #f0d6d6;
+    padding: .5em;
+}
