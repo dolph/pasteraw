@@ -33,6 +33,7 @@ def login():
 def logout():
     # remove the username from the session if it's there
     flask.session.pop('username', None)
+    flask.flash('You were logged out')
     return flask.redirect(flask.url_for('index'))
 
 
