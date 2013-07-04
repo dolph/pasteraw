@@ -50,6 +50,9 @@ h2 {
     text-align: right;
     padding: .3em;
 }
+.metanav .username {
+    float: left;
+}
 .flash {
     background: #cee5F5;
     border: 1px solid #aacbe2;

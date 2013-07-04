@@ -11,10 +11,10 @@
 
             <div class="metanav">
                 {% if not session.username %}
-                    <a href="{{ url_for('login') }}">log in</a>
+                    <a href="{{ url_for('login') }}">Log in</a>
                 {% else %}
-                    {{ session.username }}
-                    <a href="{{ url_for('logout') }}">log out</a>
+                <div class="username">{{ session.username }}</div>
+                    <a href="{{ url_for('logout') }}">Log out</a>
                 {% endif %}
             </div>
 
