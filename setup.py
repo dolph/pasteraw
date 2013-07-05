@@ -8,4 +8,6 @@ setuptools.setup(
     packages=['flaskr'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=['Flask'])
+    install_requires=[
+        'Flask',
+        'Flask-WTF'])
