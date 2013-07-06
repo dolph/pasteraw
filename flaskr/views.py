@@ -1,3 +1,5 @@
+import os
+
 import flask
 
 from flaskr import app
@@ -34,3 +36,11 @@ def logout():
 @app.errorhandler(404)
 def not_found(error):
     return flask.render_template('not_found.html'), 404
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return flask.send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon')
