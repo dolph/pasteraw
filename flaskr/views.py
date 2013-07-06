@@ -3,15 +3,18 @@ import os
 import flask
 
 from flaskr import app
+from flaskr import decorators
 from flaskr import forms
 
 
 @app.route('/')
+@decorators.templated()
 def index():
-    return flask.render_template('index.html')
+    pass
 
 
 @app.route('/login', methods=['POST', 'GET'])
+@decorators.templated()
 def login():
     form = forms.LoginForm()
     if form.validate_on_submit():
@@ -22,7 +25,7 @@ def login():
 
     # the code below is executed if the request method
     # was GET or the credentials were invalid
-    return flask.render_template('login.html', form=form)
+    return dict(form=form)
 
 
 @app.route('/logout')
