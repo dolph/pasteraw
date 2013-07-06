@@ -1,14 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
     <h1>Login</h1>
-    {% if error %}
-        <p class=error><strong>Error:</strong> {{ error }}
-    {% endif %}
-
     <form action="{{ url_for('login') }}" method="post">
+        {{ form.csrf_token }}
         <dl>
-            <dt>Username:
-            <dd><input type="text" name="username" value="{{ request.form.username }}">
+            <dt>{{ form.username.label }}:
+            <dd>{{ form.username }}
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <p class=error>{{ error }}</p>
+                {% endfor %}
+            {% endif %}
         </dl>
         <p><input type="submit" value="Login">
     </form>

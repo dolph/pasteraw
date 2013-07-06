@@ -1,6 +1,7 @@
 import flask
 
 from flaskr import app
+from flaskr import forms
 
 
 @app.route('/')
@@ -10,19 +11,16 @@ def index():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    error = None
-    if flask.request.method == 'POST':
-        if flask.request.form['username']:
-            flask.session['username'] = flask.request.form['username']
-            flask.flash(
-                'Welcome, %s' % flask.escape(flask.session['username']))
-            return flask.redirect(flask.url_for('index'))
-        else:
-            error = 'Invalid username'
+    form = forms.LoginForm()
+    if form.validate_on_submit():
+        flask.session['username'] = flask.request.form['username']
+        flask.flash(
+            'Welcome, %s' % flask.escape(flask.session['username']))
+        return flask.redirect(flask.url_for('index'))
 
     # the code below is executed if the request method
     # was GET or the credentials were invalid
-    return flask.render_template('login.html', error=error)
+    return flask.render_template('login.html', form=form)
 
 
 @app.route('/logout')

@@ -7,6 +7,7 @@ import flaskr
 class FlaskrTestCase(unittest.TestCase):
     def setUp(self):
         flaskr.app.config['TESTING'] = True
+        flaskr.app.config['CSRF_ENABLED'] = False
         self.app = flaskr.app.test_client()
 
     def tearDown(self):
@@ -25,7 +26,7 @@ class FlaskrTestCase(unittest.TestCase):
 
     def test_login_without_username(self):
         r = self.login('')
-        self.assertIn('Invalid username', r.data)
+        self.assertIn('This field is required.', r.data)
 
     def test_login_logout(self):
         username = uuid.uuid4().hex
