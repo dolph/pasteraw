@@ -13,6 +13,12 @@ class FlaskrTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_favicon(self):
+        r = self.app.get('/favicon.ico')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.content_type, 'image/vnd.microsoft.icon')
+        self.assertIn('public', r.cache_control)
+
     def login(self, username):
         return self.app.post(
             '/login',
