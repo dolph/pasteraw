@@ -2,6 +2,7 @@ import fabric.api as fab
 
 
 def vagrant():
+    """Configure Fabric to use a Vagrant environment."""
     # grab vagrant's ssh config information
     ssh_config = fab.local('vagrant ssh-config', capture=True)
     # split the config so we can index into it (will break for multiple hosts)
@@ -16,10 +17,12 @@ def vagrant():
 
 
 def uname():
+    """Print the operating system name, version, etc, of the remote server."""
     fab.run('uname -a')
 
 
 def bootstrap():
+    """Bootstrap a server with application dependencies."""
     apt_dependencies = [
         'apache2',
         'libapache2-mod-wsgi',
@@ -42,6 +45,7 @@ def bootstrap():
 
 
 def deploy():
+    """Test, package and deploy the application."""
     # let's not deploy something that's known to be broken...
     fab.local('python setup.py test')
 
