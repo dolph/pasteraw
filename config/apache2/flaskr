@@ -1,8 +1,8 @@
 <VirtualHost *:80>
     WSGIDaemonProcess flaskr
-    WSGIScriptAlias / /vagrant/config/apache2/flaskr.wsgi
+    WSGIScriptAlias / /var/www/flaskr.wsgi
 
-    <Directory /vagrant>
+    <Directory /var/www/>
         WSGIProcessGroup flaskr
         WSGIApplicationGroup %{GLOBAL}
         WSGIScriptReloading On
