@@ -32,6 +32,14 @@ def setup():
     fab.sudo('rm -f /etc/apache2/sites-enabled/000-default')
     fab.sudo('rm -f /var/www/index.html')
 
+    # setup our flask app
+    fab.put('config/apache2/flaskr.wsgi', '/var/www/', use_sudo=True)
+    fab.put(
+        'config/apache2/flaskr',
+        '/etc/apache2/sites-available/',
+        use_sudo=True)
+    fab.sudo('a2ensite flaskr')
+
 
 def pack():
     # create a new source distribution as tarball
@@ -54,11 +62,4 @@ def deploy():
         with fab.cd('/tmp/flaskr/%s' % dist):
             fab.sudo('python setup.py install')
     fab.sudo('rm -rf /tmp/flaskr /tmp/flaskr.tar.gz')
-
-    fab.put('config/apache2/flaskr.wsgi', '/var/www/', use_sudo=True)
-    fab.put(
-        'config/apache2/flaskr',
-        '/etc/apache2/sites-available/',
-        use_sudo=True)
-    fab.sudo('a2ensite flaskr')
     fab.sudo('service apache2 reload')
