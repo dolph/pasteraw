@@ -54,8 +54,7 @@ def deploy():
     # upload the source tarball to the temporary folder on the server
     fab.put('dist/%s.tar.gz' % dist, '/tmp/flaskr.tar.gz')
 
-    # create a place where we can unzip the tarball, then enter that directory
-    # and unzip it
+    # unpack the tarball, install it and cleanup
     fab.run('mkdir -p /tmp/flaskr')
     with fab.cd('/tmp/flaskr'):
         fab.run('tar xzf /tmp/flaskr.tar.gz')
