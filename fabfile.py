@@ -2,20 +2,17 @@ import fabric.api as fab
 
 
 def vagrant():
-    def parse_result(result):
-        return result.split()[1].strip('"')
+    # grab vagrant's ssh config information
+    ssh_config = fab.local('vagrant ssh-config', capture=True)
+    # split the config so we can index into it (will break for multiple hosts)
+    ssh_config = [line.strip() for line in ssh_config.split('\n')]
+    ssh_config = dict(tuple(line.split(None, 1)) for line in ssh_config)
+    # paths are wrapped with double quotes, which we don't need
+    ssh_config = dict((k, v.strip('"')) for k, v in ssh_config.iteritems())
 
-    result = fab.local('vagrant ssh-config | grep User', capture=True)
-    fab.env.user = parse_result(result)
-
-    result = fab.local('vagrant ssh-config | grep Port', capture=True)
-    port = parse_result(result)
-    result = fab.local('vagrant ssh-config | grep HostName', capture=True)
-    host = parse_result(result)
-    fab.env.hosts = ['%s:%s' % (host, port)]
-
-    result = fab.local('vagrant ssh-config | grep IdentityFile', capture=True)
-    fab.env.key_filename = parse_result(result)
+    fab.env.user = ssh_config['User']
+    fab.env.hosts = ['%s:%s' % (ssh_config['HostName'], ssh_config['Port'])]
+    fab.env.key_filename = ssh_config['IdentityFile']
 
 
 def uname():
