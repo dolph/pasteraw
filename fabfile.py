@@ -19,7 +19,7 @@ def uname():
     fab.run('uname -a')
 
 
-def setup():
+def bootstrap():
     apt_dependencies = [
         'apache2',
         'libapache2-mod-wsgi',

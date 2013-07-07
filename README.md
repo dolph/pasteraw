@@ -11,5 +11,5 @@ If you don't have [Vagrant](http://www.vagrantup.com/) and
 [Fabric](http://fabfile.org/) installed, start there first.
 
     $ vagrant up
-    $ fab vagrant setup deploy
+    $ fab vagrant bootstrap deploy
     $ open http://127.0.0.1:8000/
