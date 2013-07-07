@@ -44,6 +44,34 @@ def bootstrap():
     fab.sudo('a2ensite flaskr')
 
 
+def config(url):
+    """Deploy the instance specific configuration file located at the URL.
+
+    Example::
+
+        $ fab config:"http://example.com/my_config.file"
+
+    """
+    import os
+    import urllib
+
+    # get a copy of the specified configuration
+    local_filename, headers = urllib.urlretrieve(url)
+
+    # discover the instance path
+    cmd = (
+        "import os, sys; "
+        "print os.path.join(sys.prefix, \'var\', \'flaskr-instance\');")
+    instance_dir = fab.run('python -c "%s"' % cmd)
+    instance_filename = os.path.join(instance_dir, 'flaskr_config.py')
+
+    # copy the configuration to the instance path
+    fab.sudo('mkdir -p %s' % instance_dir)
+    fab.put(local_filename, instance_filename, use_sudo=True)
+    fab.sudo('chmod 400 %s' % instance_filename)
+    fab.sudo('chown www-data:www-data %s' % instance_filename)
+
+
 def deploy():
     """Test, package and deploy the application."""
     # let's not deploy something that's known to be broken...
