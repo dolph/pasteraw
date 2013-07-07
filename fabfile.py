@@ -41,12 +41,13 @@ def setup():
     fab.sudo('a2ensite flaskr')
 
 
-def pack():
-    # create a new source distribution as tarball
-    fab.local('python setup.py sdist --formats=gztar', capture=False)
-
-
 def deploy():
+    # let's not deploy something that's known to be broken...
+    fab.local('python setup.py test')
+
+    # create a new source distribution as tarball
+    fab.local('python setup.py sdist --formats=gztar')
+
     # figure out the release name and version
     dist = fab.local('python setup.py --fullname', capture=True).strip()
 
