@@ -26,6 +26,7 @@ def bootstrap():
     apt_dependencies = [
         'apache2',
         'libapache2-mod-wsgi',
+        'rabbitmq-server',
         'python-setuptools']
 
     fab.sudo('apt-get update')
