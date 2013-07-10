@@ -96,3 +96,8 @@ def deploy():
             fab.sudo('python setup.py install')
     fab.sudo('rm -rf /tmp/flaskr /tmp/flaskr.tar.gz')
     fab.sudo('service apache2 reload')
+
+
+def apache_error_log():
+    """Tail the Apache HTTPD error log."""
+    fab.run('tail -f /var/log/apache2/error.log')
