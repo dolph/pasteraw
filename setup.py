@@ -2,10 +2,10 @@ import setuptools
 
 
 setuptools.setup(
-    name='flaskr',
+    name='pasteraw',
     version='1.0',
     long_description=__doc__,
-    packages=['flaskr'],
+    packages=['pasteraw'],
     include_package_data=True,
     zip_safe=False,
     test_suite='tests',

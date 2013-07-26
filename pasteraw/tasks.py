@@ -1,6 +1,6 @@
 import celery
 
-import flaskr
+import pasteraw
 
 
 def make_celery(app):
@@ -24,4 +24,4 @@ def make_celery(app):
     return c
 
 
-CELERY = make_celery(flaskr.app)
+CELERY = make_celery(pasteraw.app)

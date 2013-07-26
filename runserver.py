@@ -1,4 +1,4 @@
-import flaskr
+import pasteraw
 
 
-flaskr.app.run(host='0.0.0.0', debug=True)
+pasteraw.app.run(host='0.0.0.0', debug=True)

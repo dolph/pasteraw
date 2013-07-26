@@ -1,14 +1,14 @@
 import unittest
 import uuid
 
-import flaskr
+import pasteraw
 
 
-class FlaskrTestCase(unittest.TestCase):
+class PasterawTestCase(unittest.TestCase):
     def setUp(self):
-        flaskr.app.config['TESTING'] = True
-        flaskr.app.config['CSRF_ENABLED'] = False
-        self.app = flaskr.app.test_client()
+        pasteraw.app.config['TESTING'] = True
+        pasteraw.app.config['CSRF_ENABLED'] = False
+        self.app = pasteraw.app.test_client()
 
     def tearDown(self):
         pass

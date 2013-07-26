@@ -2,9 +2,9 @@ import os
 
 import flask
 
-from flaskr import app
-from flaskr import decorators
-from flaskr import forms
+from pasteraw import app
+from pasteraw import decorators
+from pasteraw import forms
 
 
 @app.route('/')

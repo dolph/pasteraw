@@ -1,2 +1,2 @@
-recursive-include flaskr/templates *
-recursive-include flaskr/static *
+recursive-include pasteraw/templates *
+recursive-include pasteraw/static *
