@@ -1,6 +1,3 @@
-import uuid
-
-
 def encode(number):
     """Converts an integer to a base36 string."""
     alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
@@ -28,11 +25,11 @@ def encode(number):
     return sign + base36
 
 
-def decode(number):
+def decode(number, base=36):
     """Converts a base36 string to an integer."""
-    return int(number, 36)
+    return int(number, base)
 
 
-def unique():
-    """Generates a unique base36 string."""
-    return encode(uuid.uuid4().int)
+def re_encode(s, starting_base=16):
+    """Re-encodes a string in another base to base 36."""
+    return encode(decode(s, base=starting_base))

@@ -1,3 +1,4 @@
+import hashlib
 import zlib
 
 import redis
@@ -6,21 +7,21 @@ import pasteraw
 from pasteraw import base36
 
 
-def make_redis(app):
-    return redis.StrictRedis(
-        host=app.config['REDIS_HOST'],
-        port=app.config['REDIS_PORT'],
-        db=app.config['REDIS_DB'])
-
-
-REDIS = make_redis(pasteraw.app)
+REDIS = redis.StrictRedis(
+    host=pasteraw.app.config['REDIS_HOST'],
+    port=pasteraw.app.config['REDIS_PORT'],
+    db=pasteraw.app.config['REDIS_DB'])
 
 
 def save(content):
-    compressed = zlib.compress(content)
-    key = base36.unique()
-    REDIS.set(key, compressed)
-    return key
+    hex_key = hashlib.sha1(content).hexdigest()
+    key = base36.re_encode(hex_key, starting_base=16)
+    if load(key) is not None:
+        return key
+    else:
+        compressed = zlib.compress(content)
+        REDIS.set(key, compressed)
+        return key
 
 
 def load(key):
