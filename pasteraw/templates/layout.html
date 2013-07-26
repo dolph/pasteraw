@@ -10,15 +10,6 @@
         <div class="page">
             <h1>pasteraw</h1>
 
-            <div class="metanav">
-                {% if not session.username %}
-                    <a href="{{ url_for('login') }}">Log in</a>
-                {% else %}
-                <div class="username">{{ session.username }}</div>
-                    <a href="{{ url_for('logout') }}">Log out</a>
-                {% endif %}
-            </div>
-
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <ul class="flashes">

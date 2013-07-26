@@ -3,8 +3,8 @@ import wtforms
 from wtforms import validators
 
 
-class LoginForm(flask.ext.wtf.Form):
-    username = wtforms.TextField(
-        'Username',
+class PasteForm(flask.ext.wtf.Form):
+    content = wtforms.TextAreaField(
+        'Content',
         validators=[
             validators.DataRequired()])

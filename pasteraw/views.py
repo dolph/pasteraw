@@ -3,37 +3,27 @@ import os
 import flask
 
 from pasteraw import app
+from pasteraw import backend
 from pasteraw import decorators
 from pasteraw import forms
 
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 @decorators.templated()
 def index():
-    pass
-
-
-@app.route('/login', methods=['POST', 'GET'])
-@decorators.templated()
-def login():
-    form = forms.LoginForm()
+    form = forms.PasteForm()
     if form.validate_on_submit():
-        flask.session['username'] = flask.request.form['username']
-        flask.flash(
-            'Welcome, %s' % flask.escape(flask.session['username']))
-        return flask.redirect(flask.url_for('index'))
-
-    # the code below is executed if the request method
-    # was GET or the credentials were invalid
+        paste_id = backend.save(flask.request.form['content'])
+        return flask.redirect(flask.url_for('show_paste', paste_id=paste_id))
     return dict(form=form)
 
 
-@app.route('/logout')
-def logout():
-    # remove the username from the session if it's there
-    flask.session.pop('username', None)
-    flask.flash('You were logged out')
-    return flask.redirect(flask.url_for('index'))
+@app.route('/<paste_id>')
+def show_paste(paste_id):
+    content = backend.load(paste_id)
+    if content is None:
+        flask.abort(404)
+    return content, 200, {'Content-Type': 'text/plain'}
 
 
 @app.errorhandler(404)
