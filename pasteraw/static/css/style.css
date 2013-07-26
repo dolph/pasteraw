@@ -1,0 +1,5 @@
+textarea {
+    resize: vertical;
+    height: 250px;
+    font-family: monospace;
+}

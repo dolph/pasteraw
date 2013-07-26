@@ -1,17 +1,19 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h2>Home</h2>
     <form action="{{ url_for('index') }}" method="post">
         {{ form.hidden_tag() }}
-        <dl>
-            <dt>{{ form.content.label }}:
-            <dd>{{ form.content }}
+        <fieldset>
+            <legend>pasteraw</legend>
+            {{ form.content(class='input-block-level') }}
             {% if form.content.errors %}
                 {% for error in form.content.errors %}
-                    <p class=error>{{ error }}</p>
+                    <span class="help-block">{{ error }}</span>
                 {% endfor %}
             {% endif %}
-        </dl>
-        <p><input type="submit" value="Paste">
+
+            <div class="form-actions" style="text-align: right;">
+                <button type="submit" class="btn btn-primary">Paste <i class="icon-chevron-right icon-white"></i></button>
+            </div>
+        </fieldset>
     </form>
 {% endblock %}
