@@ -11,6 +11,4 @@ setuptools.setup(
     test_suite='tests',
     install_requires=[
         'Flask',
-        'Flask-WTF',
-        'sqlalchemy',
-        'celery'])
+        'Flask-WTF'])
