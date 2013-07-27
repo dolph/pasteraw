@@ -13,43 +13,43 @@ class PasterawTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def assertRedirect(self, response, location):
+        self.assertIn(response.status_code, (301, 302))
+        self.assertEqual(response.location, 'http://localhost' + location)
+
     def test_favicon(self):
         r = self.app.get('/favicon.ico')
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.content_type, 'image/vnd.microsoft.icon')
         self.assertIn('public', r.cache_control)
 
-    def login(self, username):
+    def create_paste(self, content, follow_redirects=False):
         return self.app.post(
-            '/login',
-            data={'username': username},
-            follow_redirects=True)
+            '/',
+            data={'content': content},
+            follow_redirects=follow_redirects)
 
-    def logout(self):
-        return self.app.get(
-            '/logout',
-            follow_redirects=True)
+    def test_create_paste(self):
+        content = uuid.uuid4().hex
+        r = self.create_paste(content, follow_redirects=True)
+        self.assertEquals(r.data, content)
 
-    def test_login_without_username(self):
-        r = self.login('')
+    def test_create_paste_without_content(self):
+        r = self.create_paste(content='')
         self.assertIn('This field is required.', r.data)
 
-    def test_login_logout(self):
-        username = uuid.uuid4().hex
+    def test_create_paste_predictable_url(self):
+        """URL's are just base-36 encoded SHA-1 hashes of the content."""
+        r = self.create_paste(
+            content='2y0txsm7ikq0cykn79dzg1rcs')
+        self.assertRedirect(r, '/odvznvo86eyb44mr06ditj55jtears6')
 
-        r = self.login(username)
-        self.assertIn('Welcome, %s' % username, r.data)
+    def test_create_paste_idempotent(self):
+        content = uuid.uuid4().hex
+        r1 = self.create_paste(content)
+        r2 = self.create_paste(content)
+        self.assertEquals(r1.location, r2.location)
 
-        r = self.logout()
-        self.assertIn('You were logged out', r.data)
-        self.assertNotIn(username, r.data)
-
-    def test_logout_idempotent(self):
-        r = self.logout()
-        self.assertIn('You were logged out', r.data)
-
-        r = self.logout()
-        self.assertIn('You were logged out', r.data)
 
 if __name__ == '__main__':
     unittest.main()
