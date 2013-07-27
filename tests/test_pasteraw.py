@@ -20,7 +20,13 @@ class PasterawTestCase(unittest.TestCase):
     def test_favicon(self):
         r = self.app.get('/favicon.ico')
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(r.content_type, 'image/vnd.microsoft.icon')
+        self.assertEqual(r.content_type, 'image/x-icon')
+        self.assertIn('public', r.cache_control)
+
+    def test_static_favicon(self):
+        r = self.app.get('/static/favicon.ico')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.content_type, 'image/x-icon')
         self.assertIn('public', r.cache_control)
 
     def create_paste(self, content, follow_redirects=False):

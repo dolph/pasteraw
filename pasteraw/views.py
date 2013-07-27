@@ -36,4 +36,4 @@ def favicon():
     return flask.send_from_directory(
         os.path.join(app.root_path, 'static'),
         'favicon.ico',
-        mimetype='image/vnd.microsoft.icon')
+        mimetype='image/x-icon')
