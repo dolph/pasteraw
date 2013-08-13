@@ -13,4 +13,5 @@ setuptools.setup(
         'Flask',
         'Flask-WTF',
         'raven',
+        'blinker',
         'redis'])
