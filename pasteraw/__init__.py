@@ -12,7 +12,8 @@ app.config.from_pyfile('pasteraw_config.py', silent=True)
 raven_url = app.config.get('RAVEN_URL', None)
 if raven_url is not None:
     import raven
-    app = raven.middleware.Sentry(app, client=raven.Client(raven_url))
+    from raven import middleware as raven_middleware
+    app = raven_middleware.Sentry(app, client=raven.Client(raven_url))
 
 
 import pasteraw.views  # flake8: noqa
