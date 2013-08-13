@@ -14,6 +14,7 @@ REDIS = redis.StrictRedis(
 
 
 def save(content):
+    content = content.encode('utf-8')
     hex_key = hashlib.sha1(content).hexdigest()
     key = base36.re_encode(hex_key, starting_base=16)
     if load(key) is not None:
@@ -29,4 +30,5 @@ def load(key):
     if compressed is None:
         return None
     content = zlib.decompress(compressed)
+    content = content.decode('utf-8')
     return content
