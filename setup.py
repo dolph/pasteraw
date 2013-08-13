@@ -12,4 +12,5 @@ setuptools.setup(
     install_requires=[
         'Flask',
         'Flask-WTF',
+        'raven',
         'redis'])
