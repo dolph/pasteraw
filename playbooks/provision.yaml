@@ -1,0 +1,108 @@
+- hosts: all
+  tasks:
+    - name: update apt cache
+      apt:
+        update_cache=yes
+
+    - name: install apt packages
+      apt:
+        pkg={{ item }}
+      with_items:
+        - git
+        - nginx
+        - python-dev
+        - python-setuptools
+        - python-virtualenv
+        - redis-server
+        - supervisor
+
+    - name: install pip
+      easy_install:
+        name=pip
+
+    - name: create home dir for pasteraw user
+      user:
+        name=pasteraw
+        createhome=yes
+
+    - name: deploy redis config
+      template:
+        src=templates/redis.conf
+        dest=/etc/redis/redis.conf
+      notify: restart redis
+
+  handlers:
+    - name: restart redis
+      command: /etc/init.d/redis-server restart
+
+- hosts: all
+  sudo: True
+  sudo_user: pasteraw
+  tasks:
+    - name: create directories
+      file:
+        dest={{ item }}
+        state=directory
+        mode=0700
+      with_items:
+        - ~/log
+        - ~/.ssh
+
+    - name: install pip packages into venv
+      sudo_user: pasteraw
+      pip:
+        name={{ item }} state=latest
+        virtualenv=/home/pasteraw/venv
+      with_items:
+        - pip
+        - gunicorn
+
+- hosts: all
+  tasks:
+    - name: deploy app config
+      template:
+        src=templates/config.py
+        dest=/etc/pasteraw.conf.py
+        owner=pasteraw
+        group=pasteraw
+        mode=0700
+
+    - name: deploy gunicorn config
+      template:
+        src=templates/supervisor.gunicorn.conf
+        dest=/etc/supervisor/conf.d/gunicorn.conf
+
+    - name: create http cache dir
+      file:
+        path=/var/www/cache
+        state=directory
+        owner=www-data
+        group=www-data
+        mode=0700
+      notify: restart nginx
+
+    - name: deploy nginx config
+      template:
+        src=templates/nginx.vhost
+        dest=/etc/nginx/sites-enabled/default
+        owner=www-data
+        group=www-data
+        mode=0700
+      notify: restart nginx
+
+    - name: ensure supervised processes are present
+      shell: /usr/bin/supervisorctl reread && /usr/bin/supervisorctl update
+
+    - name: ensure nginx is running
+      service:
+        name=nginx
+        enabled=yes
+        state=started
+
+  handlers:
+    - name: restart nginx
+      service:
+        name=nginx
+        state=reloaded
+
+- include: deploy.yaml

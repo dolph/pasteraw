@@ -1,0 +1,25 @@
+- hosts: all
+  tasks:
+    - name: fetch app repo
+      git:
+        repo=https://github.com/dolph/pasteraw.git
+        dest=/var/www/pasteraw
+
+- hosts: all
+  sudo: True
+  sudo_user: pasteraw
+  tasks:
+    - name: install app
+      pip:
+        name=/var/www/pasteraw
+        state=latest
+        virtualenv=~/venv
+
+- hosts: all
+  tasks:
+    - name: restart supervised processes
+      supervisorctl:
+        name={{ item }}
+        state=restarted
+      with_items:
+        - gunicorn
