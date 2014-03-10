@@ -1,3 +1,5 @@
+import os
+
 import flask
 
 
@@ -6,8 +8,8 @@ app = flask.Flask(__name__, instance_relative_config=True)
 # start with a default configuration
 app.config.from_object('pasteraw.config')
 
-# override defaults with instance-specific configuration
-app.config.from_pyfile('pasteraw_config.py', silent=True)
+# override defaults with custom configuration
+app.config.from_pyfile('/etc/pasteraw.conf.py', silent=True)
 
 # enable logging in production
 if not app.debug:
