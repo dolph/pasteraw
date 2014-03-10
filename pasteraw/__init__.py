@@ -1,5 +1,4 @@
 import flask
-from raven.contrib.flask import Sentry
 
 
 app = flask.Flask(__name__, instance_relative_config=True)
@@ -16,9 +15,6 @@ if not app.debug:
     file_handler = logging.FileHandler(app.config['LOG_FILE'])
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
-
-# provide error notifications
-sentry = Sentry(app)
 
 
 import pasteraw.views  # flake8: noqa
