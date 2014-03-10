@@ -3,7 +3,7 @@
     <form action="{{ url_for('index') }}" method="post">
         {{ form.hidden_tag() }}
         <fieldset>
-            <legend>pasteraw</legend>
+            <legend>pasteraw <small>a plaintext pastebin service</small></legend>
             {{ form.content(class='input-block-level') }}
             {% if form.content.errors %}
                 {% for error in form.content.errors %}
