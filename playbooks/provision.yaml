@@ -1,4 +1,5 @@
 - hosts: all
+  gather_facts: False
   tasks:
     - name: update apt cache
       apt:
@@ -36,6 +37,7 @@
       command: /etc/init.d/redis-server restart
 
 - hosts: all
+  gather_facts: False
   sudo: True
   sudo_user: pasteraw
   tasks:
@@ -58,6 +60,7 @@
         - gunicorn
 
 - hosts: all
+  gather_facts: False
   tasks:
     - name: deploy app config
       template:

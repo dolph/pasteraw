@@ -1,4 +1,5 @@
 - hosts: all
+  gather_facts: False
   tasks:
     - name: fetch app repo
       git:
@@ -6,6 +7,7 @@
         dest=/var/www/pasteraw
 
 - hosts: all
+  gather_facts: False
   sudo: True
   sudo_user: pasteraw
   tasks:
@@ -16,6 +18,7 @@
         virtualenv=~/venv
 
 - hosts: all
+  gather_facts: False
   tasks:
     - name: restart supervised processes
       supervisorctl:
