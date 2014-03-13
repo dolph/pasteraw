@@ -3,3 +3,6 @@ textarea {
     height: 500px;
     font-family: monospace;
 }
+.muted a, .muted a:visited {
+    color: #55b0dd;
+}
