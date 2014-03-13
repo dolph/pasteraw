@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
     <form action="{{ url_for('index') }}" method="post">
-        {{ form.hidden_tag() }}
         <fieldset>
             <legend>pasteraw <small>a plaintext pastebin service</small></legend>
             {{ form.content(class='input-block-level') }}

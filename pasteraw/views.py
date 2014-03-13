@@ -27,7 +27,7 @@ class BadRequest(Exception):
 @app.route('/', methods=['POST', 'GET'])
 @decorators.templated()
 def index():
-    form = forms.PasteForm()
+    form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
         paste_id = backend.save(flask.request.form['content'])
         return flask.redirect(flask.url_for('show_paste', paste_id=paste_id))
