@@ -48,7 +48,7 @@ def show_paste(paste_id):
     content = backend.load(paste_id)
     if content is None:
         flask.abort(404)
-    return content, 200, {'Content-Type': 'text/plain'}
+    return content, 200, {'Content-Type': 'text/plain; charset="utf-8"'}
 
 
 @app.errorhandler(404)
