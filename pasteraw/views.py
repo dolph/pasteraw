@@ -45,6 +45,7 @@ def create_paste():
 
 @app.route('/<paste_id>')
 def show_paste(paste_id):
+    """Provides for backwards compatibility with legacy URLs."""
     return flask.redirect('http://cdn.pasteraw.com/%s' % paste_id, 301)
 
 
