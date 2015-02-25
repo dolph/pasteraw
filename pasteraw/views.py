@@ -46,15 +46,6 @@ def create_paste():
     raise BadRequest('missing paste content')
 
 
-@app.route('/migrate')
-def migrate():
-    def migrate_all():
-        for key in kvs.REDIS.keys(pattern='*'):
-            cdn.upload(kvs.load(key))
-            yield ('Migrated %s' % key) + '\n'
-    return flask.Response(migrate_all())
-
-
 @app.route('/<paste_id>')
 def show_paste(paste_id):
     return flask.redirect('http://cdn.pasteraw.com/%s' % paste_id, 301)
