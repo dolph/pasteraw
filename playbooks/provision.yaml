@@ -17,9 +17,20 @@
         - redis-server
         - supervisor
 
+    - name: download get-pip
+      get_url:
+        dest=~/get-pip.py
+        url=https://bootstrap.pypa.io/get-pip.py
+
     - name: install pip
-      easy_install:
+      command: python ~/get-pip.py
+      args:
+        creates: /usr/local/bin/pip
+
+    - name: upgrade pip
+      pip:
         name=pip
+        state=latest
 
     - name: create home dir for pasteraw user
       user:
