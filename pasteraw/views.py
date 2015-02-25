@@ -39,7 +39,7 @@ def create_paste():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
         paste_id = cdn.upload(flask.request.form['content'])
-        return flask.redirect(flask.url_for('show_paste', paste_id=paste_id))
+        return flask.redirect('http://cdn.pasteraw.com/%s' % paste_id)
     raise BadRequest('missing paste content')
 
 
