@@ -4,7 +4,6 @@ import flask
 
 from pasteraw import app
 from pasteraw.backends import cdn
-from pasteraw.backends import kvs
 from pasteraw import decorators
 from pasteraw import forms
 
@@ -30,8 +29,7 @@ class BadRequest(Exception):
 def index():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
-        paste_id = kvs.save(flask.request.form['content'])
-        cdn.upload(flask.request.form['content'])
+        paste_id = cdn.upload(flask.request.form['content'])
         return flask.redirect('http://cdn.pasteraw.com/%s' % paste_id)
     return dict(form=form)
 
@@ -40,8 +38,7 @@ def index():
 def create_paste():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
-        paste_id = kvs.save(flask.request.form['content'])
-        cdn.upload(flask.request.form['content'])
+        paste_id = cdn.upload(flask.request.form['content'])
         return flask.redirect(flask.url_for('show_paste', paste_id=paste_id))
     raise BadRequest('missing paste content')
 
