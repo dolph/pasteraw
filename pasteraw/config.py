@@ -1,4 +1,3 @@
-import os
 import uuid
 
 
@@ -18,6 +17,3 @@ CLOUD_REGION = None
 RACKSPACE_USERNAME = None
 RACKSPACE_API_KEY = None
 CDN_CONTAINER_NAME = 'pasteraw'
-
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
