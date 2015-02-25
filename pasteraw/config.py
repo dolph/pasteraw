@@ -1,3 +1,4 @@
+import os
 import uuid
 
 
@@ -11,6 +12,12 @@ SECRET_KEY = uuid.uuid4().hex
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0
+
+CLOUD_ID_TYPE = None
+CLOUD_REGION = None
+RACKSPACE_USERNAME = None
+RACKSPACE_API_KEY = None
+CDN_CONTAINER_NAME = 'pasteraw'
 
 CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL

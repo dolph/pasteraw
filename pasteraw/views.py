@@ -3,7 +3,8 @@ import os
 import flask
 
 from pasteraw import app
-from pasteraw import backend
+from pasteraw.backends import cdn
+from pasteraw.backends import kvs
 from pasteraw import decorators
 from pasteraw import forms
 
@@ -29,8 +30,9 @@ class BadRequest(Exception):
 def index():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
-        paste_id = backend.save(flask.request.form['content'])
-        return flask.redirect(flask.url_for('show_paste', paste_id=paste_id))
+        paste_id = kvs.save(flask.request.form['content'])
+        cdn.upload(flask.request.form['content'])
+        return flask.redirect('http://cdn.pasteraw.com/%s' % paste_id)
     return dict(form=form)
 
 
@@ -38,17 +40,24 @@ def index():
 def create_paste():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
-        paste_id = backend.save(flask.request.form['content'])
+        paste_id = kvs.save(flask.request.form['content'])
+        cdn.upload(flask.request.form['content'])
         return flask.redirect(flask.url_for('show_paste', paste_id=paste_id))
     raise BadRequest('missing paste content')
 
 
+@app.route('/migrate')
+def migrate():
+    def migrate_all():
+        for key in kvs.REDIS.keys(pattern='*'):
+            cdn.upload(kvs.load(key))
+            yield ('Migrated %s' % key) + '\n'
+    return flask.Response(migrate_all())
+
+
 @app.route('/<paste_id>')
 def show_paste(paste_id):
-    content = backend.load(paste_id)
-    if content is None:
-        flask.abort(404)
-    return content, 200, {'Content-Type': 'text/plain; charset="utf-8"'}
+    return flask.redirect('http://cdn.pasteraw.com/%s' % paste_id, 301)
 
 
 @app.errorhandler(404)
