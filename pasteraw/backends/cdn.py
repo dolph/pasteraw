@@ -28,6 +28,9 @@ print('Setting region to %s' % pasteraw.app.config['CLOUD_REGION'])
 pyrax.set_setting('region', pasteraw.app.config['CLOUD_REGION'])
 pyrax.set_setting('use_servicenet', True)
 
+containers = pyrax.cloudfiles.list_containers()
+print('Available containers: %s' % containers)
+
 container_name = pasteraw.app.config['CDN_CONTAINER_NAME']
 container = pyrax.cloudfiles.get_container(container_name)
 if container:
