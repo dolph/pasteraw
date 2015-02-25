@@ -1,7 +1,7 @@
 - hosts: all
   gather_facts: False
   tasks:
-    - name: fetch app repo
+    - name: fetch app repo for static assets
       git:
         repo=https://github.com/dolph/pasteraw.git
         dest=/var/www/pasteraw
@@ -11,11 +11,24 @@
   sudo: True
   sudo_user: pasteraw
   tasks:
+    - name: fetch app repo
+      git:
+        repo=https://github.com/dolph/pasteraw.git
+        dest=~/pasteraw
+
+    - name: pre-install dependencies
+      pip:
+        name={{ item }}
+        virtualenv=~/venv
+      with_items:
+      - distribute
+      - "keyring<5.2.0"
+
     - name: install app
       pip:
-        name=/var/www/pasteraw
-        state=latest
+        name=~/pasteraw
         virtualenv=~/venv
+        extra_args='--editable'
 
 - hosts: all
   gather_facts: False
