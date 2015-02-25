@@ -3,7 +3,7 @@ import os
 import flask
 
 from pasteraw import app
-from pasteraw.backends import cdn
+from pasteraw import cdn
 from pasteraw import decorators
 from pasteraw import forms
 
