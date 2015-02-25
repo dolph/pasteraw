@@ -8,9 +8,13 @@ from pasteraw import base36
 
 ENABLED = False
 
-
 if pasteraw.app.config['CLOUD_ID_TYPE'] == 'rackspace':
     pyrax.set_setting('identity_type', pasteraw.app.config['CLOUD_ID_TYPE'])
+
+    print('Setting region to %s' % pasteraw.app.config['CLOUD_REGION'])
+    pyrax.set_setting('region', pasteraw.app.config['CLOUD_REGION'])
+    pyrax.set_setting('use_servicenet', True)
+
     print('Logging into rackspace as %s ...' %
           pasteraw.app.config['RACKSPACE_USERNAME'])
     pyrax.set_credentials(
@@ -23,10 +27,6 @@ elif pasteraw.app.config['CLOUD_ID_TYPE'] == 'keystone':
 else:
     raise Exception(
         'No credential type provided for CDN services (CLOUD_ID_TYPE).')
-
-print('Setting region to %s' % pasteraw.app.config['CLOUD_REGION'])
-pyrax.set_setting('region', pasteraw.app.config['CLOUD_REGION'])
-pyrax.set_setting('use_servicenet', True)
 
 containers = pyrax.cloudfiles.list_containers()
 print('Available containers: %s' % containers)
