@@ -13,5 +13,4 @@ setuptools.setup(
         'flask',
         'pyrax',
         'flask-wtf',
-        'blinker',
-        'redis'])
+        'blinker'])

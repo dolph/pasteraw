@@ -14,7 +14,6 @@
         - python-dev
         - python-setuptools
         - python-virtualenv
-        - redis-server
         - supervisor
 
     - name: download get-pip
@@ -36,16 +35,6 @@
       user:
         name=pasteraw
         createhome=yes
-
-    - name: deploy redis config
-      template:
-        src=templates/redis.conf
-        dest=/etc/redis/redis.conf
-      notify: restart redis
-
-  handlers:
-    - name: restart redis
-      command: /etc/init.d/redis-server restart
 
 - hosts: all
   gather_facts: False
