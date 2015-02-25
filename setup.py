@@ -10,7 +10,8 @@ setuptools.setup(
     zip_safe=False,
     test_suite='tests',
     install_requires=[
-        'Flask',
-        'Flask-WTF',
+        'flask',
+        'pyrax',
+        'flask-wtf',
         'blinker',
         'redis'])
