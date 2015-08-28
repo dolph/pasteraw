@@ -22,9 +22,6 @@ if app.config['CLOUD_ID_TYPE'] == 'rackspace':
             app.config['RACKSPACE_USERNAME'],
             app.config['RACKSPACE_API_KEY'])
 
-        # list containers to exercise credentials
-        pyrax.cloudfiles.list_containers()
-
         ENABLED = True
     except (pyrax.exceptions.PyraxException, AttributeError) as e:
         app.logger.warning(

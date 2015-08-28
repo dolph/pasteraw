@@ -7,9 +7,49 @@ from pasteraw import backend
 from pasteraw import decorators
 from pasteraw import forms
 
+import time
 
-class BadRequest(Exception):
-    status_code = 400
+
+RATE_LIMIT_BY_IP = {}
+MAX_THROTTLES = 3
+
+
+def check_rate_limit(ip):
+    rate = 3  # unit: messages
+    per = 60  # unit: seconds
+
+    RATE_LIMIT_BY_IP.setdefault(ip, (rate, time.clock(), ))
+    allowance, last_check, throttle_count = RATE_LIMIT_BY_IP[ip]
+
+    current = time.clock()
+    time_passed = current - last_check
+    last_check = current
+    allowance += time_passed * (rate / per)
+
+    if allowance > rate:
+        # A lot of time has passed since we last saw this IP, reset their
+        # throttle.
+        allowance = rate
+
+    if allowance < 1.0:
+        RATE_LIMIT_BY_IP[ip] = (allowance, last_check, throttle_count + 1)
+        retry_after = (1 - allowance) * (per / rate)
+        app.logger.warning(
+            'Throttling %s (allowance=%s, last_check=%s, retry_after=%s, '
+            'throttle_count=%s)' % (
+                ip, allowance, last_check, retry_after))
+        if throttle_count <= MAX_THROTTLES:
+            raise RateLimitExceeded(
+                'Rate limit exceeded. Retry after %s seconds.' % retry_after)
+        else:
+            raise RateLimitExceeded('Rate limit exceeded.')
+    else:
+        RATE_LIMIT_BY_IP[ip] = (allowance - 1, last_check)
+        return True
+
+
+class ApiException(Exception):
+    status_code = None
 
     def __init__(self, message, status_code=None, payload=None):
         Exception.__init__(self)
@@ -24,11 +64,20 @@ class BadRequest(Exception):
         return rv
 
 
+class BadRequest(ApiException):
+    status_code = 400
+
+
+class RateLimitExceeded(ApiException):
+    status_code = 429
+
+
 @app.route('/', methods=['POST', 'GET'])
 @decorators.templated()
 def index():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
+        check_rate_limit(flask.request.remote_addr)
         url = backend.write(flask.request.form['content'])
         return flask.redirect(url)
     return dict(form=form)
@@ -38,6 +87,7 @@ def index():
 def create_paste():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
+        check_rate_limit(flask.request.remote_addr)
         url = backend.create(flask.request.form['content'])
         return flask.redirect(url)
     raise BadRequest('Missing paste content')
@@ -69,6 +119,13 @@ def handle_not_found(error):
 
 @app.errorhandler(BadRequest)
 def handle_bad_request(error):
+    response = flask.jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
+
+@app.errorhandler(RateLimitExceeded)
+def handle_rate_limit_exceeded(error):
     response = flask.jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
