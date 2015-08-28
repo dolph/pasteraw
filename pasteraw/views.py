@@ -24,7 +24,7 @@ def check_rate_limit(ip):
     current = time.clock()
     time_passed = current - last_check
     last_check = current
-    allowance += time_passed * (rate / per)
+    allowance += 1.0 * time_passed * (rate / per)
 
     if allowance > rate:
         # A lot of time has passed since we last saw this IP, reset their
@@ -33,7 +33,7 @@ def check_rate_limit(ip):
 
     if allowance < 1.0:
         RATE_LIMIT_BY_IP[ip] = (allowance, last_check, throttle_count + 1)
-        retry_after = (1 - allowance) * (per / rate)
+        retry_after = (1.0 - allowance) * (per / rate)
         app.logger.warning(
             'Throttling %s (allowance=%s, last_check=%s, retry_after=%s, '
             'throttle_count=%s)' % (
