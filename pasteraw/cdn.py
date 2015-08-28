@@ -7,21 +7,26 @@ import pasteraw
 ENABLED = False
 
 if pasteraw.app.config['CLOUD_ID_TYPE'] == 'rackspace':
-    pyrax.set_setting('identity_type', pasteraw.app.config['CLOUD_ID_TYPE'])
+    try:
+        pyrax.set_setting('identity_type', pasteraw.app.config['CLOUD_ID_TYPE'])
 
-    pasteraw.app.logger.info(
-        'Setting region to %s' % pasteraw.app.config['CLOUD_REGION'])
-    pyrax.set_setting('region', pasteraw.app.config['CLOUD_REGION'])
-    pyrax.set_setting('use_servicenet', True)
+        pasteraw.app.logger.info(
+            'Setting region to %s' % pasteraw.app.config['CLOUD_REGION'])
+        pyrax.set_setting('region', pasteraw.app.config['CLOUD_REGION'])
+        pyrax.set_setting('use_servicenet', True)
 
-    pasteraw.app.logger.info(
-        'Logging into rackspace as %s ...' %
-        pasteraw.app.config['RACKSPACE_USERNAME'])
-    pyrax.set_credentials(
-        pasteraw.app.config['RACKSPACE_USERNAME'],
-        pasteraw.app.config['RACKSPACE_API_KEY'])
+        pasteraw.app.logger.info(
+            'Logging into rackspace as %s ...' %
+            pasteraw.app.config['RACKSPACE_USERNAME'])
+        pyrax.set_credentials(
+            pasteraw.app.config['RACKSPACE_USERNAME'],
+            pasteraw.app.config['RACKSPACE_API_KEY'])
 
-    ENABLED = True
+        ENABLED = True
+    except pyrax.exceptions.AuthenticationFailed as e:
+        pasteraw.app.logger.warning(
+            'Unable to authenticate using pyrax: %s' % e)
+
 elif pasteraw.app.config['CLOUD_ID_TYPE'] == 'keystone':
     raise NotImplementedError(
         'pyrax does not document how to provide keystone credentials '
