@@ -22,8 +22,11 @@ if pasteraw.app.config['CLOUD_ID_TYPE'] == 'rackspace':
             pasteraw.app.config['RACKSPACE_USERNAME'],
             pasteraw.app.config['RACKSPACE_API_KEY'])
 
+        # list containers to exercise credentials
+        pyrax.cloudfiles.list_containers()
+
         ENABLED = True
-    except pyrax.exceptions.AuthenticationFailed as e:
+    except pyrax.exceptions.PyraxException as e:
         pasteraw.app.logger.warning(
             'Unable to authenticate using pyrax: %s' % e)
 
