@@ -26,10 +26,9 @@ if app.config['CLOUD_ID_TYPE'] == 'rackspace':
         pyrax.cloudfiles.list_containers()
 
         ENABLED = True
-    except pyrax.exceptions.PyraxException as e:
+    except (pyrax.exceptions.PyraxException, AttributeError) as e:
         app.logger.warning(
             'Unable to authenticate using pyrax: %s' % e)
-
 elif app.config['CLOUD_ID_TYPE'] == 'keystone':
     raise NotImplementedError(
         'pyrax does not document how to provide keystone credentials '
