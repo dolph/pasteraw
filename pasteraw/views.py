@@ -25,10 +25,10 @@ def check_rate_limit(request):
     rate = 3  # unit: messages
     per = 60  # unit: seconds
 
-    RATE_LIMIT_BY_IP.setdefault(ip, (rate, time.clock(), 0))
+    RATE_LIMIT_BY_IP.setdefault(ip, (rate, time.time(), 0))
     allowance, last_check, throttle_count = RATE_LIMIT_BY_IP[ip]
 
-    current = time.clock()
+    current = time.time()
     time_passed = current - last_check
     last_check = current
     allowance += 1.0 * time_passed * (rate / per)
