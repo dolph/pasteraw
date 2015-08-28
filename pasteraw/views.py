@@ -15,10 +15,10 @@ MAX_THROTTLES = 3
 
 
 def check_rate_limit(ip):
-    rate = 3  # unit: messages
+    rate = 4  # unit: messages
     per = 60  # unit: seconds
 
-    RATE_LIMIT_BY_IP.setdefault(ip, (rate, time.clock(), ))
+    RATE_LIMIT_BY_IP.setdefault(ip, (rate, time.clock(), 0))
     allowance, last_check, throttle_count = RATE_LIMIT_BY_IP[ip]
 
     current = time.clock()
@@ -37,14 +37,14 @@ def check_rate_limit(ip):
         app.logger.warning(
             'Throttling %s (allowance=%s, last_check=%s, retry_after=%s, '
             'throttle_count=%s)' % (
-                ip, allowance, last_check, retry_after))
+                ip, allowance, last_check, retry_after, throttle_count))
         if throttle_count <= MAX_THROTTLES:
             raise RateLimitExceeded(
                 'Rate limit exceeded. Retry after %s seconds.' % retry_after)
         else:
             raise RateLimitExceeded('Rate limit exceeded.')
     else:
-        RATE_LIMIT_BY_IP[ip] = (allowance - 1, last_check)
+        RATE_LIMIT_BY_IP[ip] = (allowance - 1, last_check, throttle_count)
         return True
 
 

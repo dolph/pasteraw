@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name='pasteraw',
-    version='1.2.1',
+    version='1.3.0',
     long_description=__doc__,
     packages=['pasteraw'],
     include_package_data=True,
