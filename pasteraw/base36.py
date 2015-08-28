@@ -25,9 +25,9 @@ def encode(number):
     return sign + base36
 
 
-def decode(number, base=36):
+def decode(s, base=36):
     """Converts a base36 string to an integer."""
-    return int(number, base)
+    return int(s, base)
 
 
 def re_encode(s, starting_base=16):
