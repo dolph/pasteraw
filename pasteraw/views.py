@@ -14,8 +14,15 @@ RATE_LIMIT_BY_IP = {}
 MAX_THROTTLES = 3
 
 
-def check_rate_limit(ip):
-    rate = 4  # unit: messages
+def check_rate_limit(request):
+    if app.config['TESTING']:
+        # ignore rate limiting in debug mode
+        return True
+
+    # this is the actual remote address passed through nginx
+    ip = request.headers['X-Real-IP']
+
+    rate = 3  # unit: messages
     per = 60  # unit: seconds
 
     RATE_LIMIT_BY_IP.setdefault(ip, (rate, time.clock(), 0))
@@ -35,9 +42,9 @@ def check_rate_limit(ip):
         RATE_LIMIT_BY_IP[ip] = (allowance, last_check, throttle_count + 1)
         retry_after = (1.0 - allowance) * (per / rate)
         app.logger.warning(
-            'Throttling %s (allowance=%s, last_check=%s, retry_after=%s, '
-            'throttle_count=%s)' % (
-                ip, allowance, last_check, retry_after, throttle_count))
+            'Throttling %s (allowance=%s, last_check=%s, throttle_count=%s, '
+            'retry_after=%s)' % (
+                ip, allowance, last_check, throttle_count, retry_after))
         if throttle_count <= MAX_THROTTLES:
             raise RateLimitExceeded(
                 'Rate limit exceeded. Retry after %s seconds.' % retry_after)
@@ -77,7 +84,7 @@ class RateLimitExceeded(ApiException):
 def index():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
-        check_rate_limit(flask.request.remote_addr)
+        check_rate_limit(flask.request)
         url = backend.write(flask.request.form['content'])
         return flask.redirect(url)
     return dict(form=form)
@@ -87,7 +94,7 @@ def index():
 def create_paste():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
-        check_rate_limit(flask.request.remote_addr)
+        check_rate_limit(flask.request)
         url = backend.create(flask.request.form['content'])
         return flask.redirect(url)
     raise BadRequest('Missing paste content')
