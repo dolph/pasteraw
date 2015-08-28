@@ -69,11 +69,15 @@
         owner=pasteraw
         group=pasteraw
         mode=0700
+      tags:
+        - config
 
     - name: deploy gunicorn config
       template:
         src=templates/supervisor.gunicorn.conf
         dest=/etc/supervisor/conf.d/gunicorn.conf
+      tags:
+        - config
 
     - name: create http cache dir
       file:
@@ -92,9 +96,13 @@
         group=www-data
         mode=0700
       notify: restart nginx
+      tags:
+        - config
 
     - name: ensure supervised processes are present
       shell: /usr/bin/supervisorctl reread && /usr/bin/supervisorctl update
+      tags:
+        - config
 
     - name: ensure nginx is running
       service:
