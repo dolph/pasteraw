@@ -33,3 +33,12 @@ def decode(s, base=36):
 def re_encode(s, starting_base=16):
     """Re-encodes a string in another base to base 36."""
     return encode(decode(s, base=starting_base))
+
+
+def validate(s):
+    """Returns true if a string is base36-encoded."""
+    try:
+        decode(s)
+        return True
+    except Exception:
+        return False
