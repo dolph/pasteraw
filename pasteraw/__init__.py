@@ -1,3 +1,5 @@
+import logging
+import logging.handlers
 import os
 
 import flask
@@ -11,10 +13,14 @@ app.config.from_object('pasteraw.config')
 # override defaults with custom configuration
 app.config.from_pyfile('/etc/pasteraw.conf.py', silent=True)
 
-# enable logging in production
-if not app.debug:
-    import logging
-    file_handler = logging.FileHandler(app.config['LOG_FILE'])
+if app.debug:
+    app.logger.setLevel(logging.DEBUG)
+else:
+    # enable logging to file in production
+    file_handler = logging.handlers.RotatingFileHandler(
+        app.config['LOG_FILE'],
+        maxBytes=1000000,
+        backupCount=3)
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
 
