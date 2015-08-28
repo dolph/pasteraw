@@ -1,8 +1,9 @@
 import uuid
 
 
-DEBUG = False
-TESTING = False
+CDN_ENDPOINT = 'http://cdn.pasteraw.com'
+
+PASTE_DIR = None
 LOG_FILE = '/tmp/pasteraw.log'
 
 # if you don't override the secret key, one will be chosen for you

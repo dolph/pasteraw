@@ -3,7 +3,7 @@ import os
 import flask
 
 from pasteraw import app
-from pasteraw import cdn
+from pasteraw import backend
 from pasteraw import decorators
 from pasteraw import forms
 
@@ -29,8 +29,8 @@ class BadRequest(Exception):
 def index():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
-        paste_id = cdn.upload(flask.request.form['content'])
-        return flask.redirect('http://cdn.pasteraw.com/%s' % paste_id)
+        url = backend.write(flask.request.form['content'])
+        return flask.redirect(url)
     return dict(form=form)
 
 
@@ -38,15 +38,28 @@ def index():
 def create_paste():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
-        paste_id = cdn.upload(flask.request.form['content'])
-        return flask.redirect('http://cdn.pasteraw.com/%s' % paste_id)
-    raise BadRequest('missing paste content')
+        url = backend.create(flask.request.form['content'])
+        return flask.redirect(url)
+    raise BadRequest('Missing paste content')
 
 
 @app.route('/<paste_id>')
 def show_paste(paste_id):
-    """Provides for backwards compatibility with legacy URLs."""
-    return flask.redirect('http://cdn.pasteraw.com/%s' % paste_id, 301)
+    """Either returns a locally-stored paste or redirects to CDN.
+
+    Redirecting to the CDN handles both legacy paste URLs and pastes that used
+    to be stored locally, but have since been moved to the CDN.
+
+    """
+    try:
+        content = backend.read(paste_id)
+        return content, 200, {'Content-Type': 'text/plain; charset="utf-8"'}
+    except backend.InvalidKey:
+        flask.abort(404)
+    except backend.NotFound:
+        # The file is not here, but maybe it's on the CDN?
+        url = backend.remote_url(paste_id)
+        return flask.redirect(url, 301)
 
 
 @app.errorhandler(404)

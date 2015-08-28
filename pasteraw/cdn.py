@@ -1,9 +1,7 @@
-import hashlib
-
 import pyrax
+import pyrax.exceptions
 
 import pasteraw
-from pasteraw import base36
 
 
 ENABLED = False
@@ -11,36 +9,44 @@ ENABLED = False
 if pasteraw.app.config['CLOUD_ID_TYPE'] == 'rackspace':
     pyrax.set_setting('identity_type', pasteraw.app.config['CLOUD_ID_TYPE'])
 
-    print('Setting region to %s' % pasteraw.app.config['CLOUD_REGION'])
+    pasteraw.app.logger.info(
+        'Setting region to %s' % pasteraw.app.config['CLOUD_REGION'])
     pyrax.set_setting('region', pasteraw.app.config['CLOUD_REGION'])
     pyrax.set_setting('use_servicenet', True)
 
-    print('Logging into rackspace as %s ...' %
-          pasteraw.app.config['RACKSPACE_USERNAME'])
+    pasteraw.app.logger.info(
+        'Logging into rackspace as %s ...' %
+        pasteraw.app.config['RACKSPACE_USERNAME'])
     pyrax.set_credentials(
         pasteraw.app.config['RACKSPACE_USERNAME'],
         pasteraw.app.config['RACKSPACE_API_KEY'])
+
+    ENABLED = True
 elif pasteraw.app.config['CLOUD_ID_TYPE'] == 'keystone':
     raise NotImplementedError(
         'pyrax does not document how to provide keystone credentials '
         '"directly".')
 else:
-    raise Exception(
+    pasteraw.app.logger.warning(
         'No credential type provided for CDN services (CLOUD_ID_TYPE).')
 
-containers = pyrax.cloudfiles.list_containers()
-print('Available containers: %s' % containers)
 
-container_name = pasteraw.app.config['CDN_CONTAINER_NAME']
-container = pyrax.cloudfiles.get_container(container_name)
-if container:
-    print('Cloud Files ready.')
+def upload(key, content):
+    if not ENABLED:
+        return False
 
+    try:
+        container = pyrax.cloudfiles.get_container(
+            pasteraw.app.config['CDN_CONTAINER_NAME'])
+    except pyrax.exceptions.ClientException as e:
+        pasteraw.app.logger.warning(e)
+        return False
 
-def upload(content):
-    content = content.encode('utf-8')
-    hex_key = hashlib.sha1(content).hexdigest()
-    key = base36.re_encode(hex_key, starting_base=16)
-    obj = container.store_object(key, content)
-    obj.change_content_type('text/plain; charset="utf-8"')
-    return key
+    try:
+        obj = container.store_object(key, content)
+        obj.change_content_type('text/plain; charset="utf-8"')
+        return True
+    except pyrax.exceptions.ClientException as e:
+        pasteraw.app.logger.warning(e)
+
+    return False

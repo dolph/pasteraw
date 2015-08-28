@@ -1,4 +1,7 @@
+import os
+
 LOG_FILE = '/home/pasteraw/log/pasteraw.log'
+PASTE_DIR = os.path.expanduser('~/pastes')
 
 CLOUD_ID_TYPE = '{{ cloud_id_type }}'
 CLOUD_REGION = '{{ cloud_region }}'
