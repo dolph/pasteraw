@@ -22,7 +22,7 @@ def check_rate_limit(request):
     # this is the actual remote address passed through nginx
     ip = request.headers['X-Real-IP']
 
-    rate = 3.0 # unit: messages
+    rate = 3.0  # unit: messages
     per = 60.0  # unit: seconds
 
     RATE_LIMIT_BY_IP.setdefault(ip, (rate, time.time(), 0))
