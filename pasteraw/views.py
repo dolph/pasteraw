@@ -22,8 +22,8 @@ def check_rate_limit(request):
     # this is the actual remote address passed through nginx
     ip = request.headers['X-Real-IP']
 
-    rate = 3  # unit: messages
-    per = 60  # unit: seconds
+    rate = 3.0 # unit: messages
+    per = 60.0  # unit: seconds
 
     RATE_LIMIT_BY_IP.setdefault(ip, (rate, time.time(), 0))
     allowance, last_check, throttle_count = RATE_LIMIT_BY_IP[ip]
@@ -31,7 +31,7 @@ def check_rate_limit(request):
     current = time.time()
     time_passed = current - last_check
     last_check = current
-    allowance += 1.0 * time_passed * (rate / per)
+    allowance += time_passed * (rate / per)
 
     if allowance > rate:
         # A lot of time has passed since we last saw this IP, reset their
