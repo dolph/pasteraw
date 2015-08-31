@@ -96,7 +96,7 @@ def create_paste():
     form = forms.PasteForm(csrf_enabled=False)
     if form.validate_on_submit():
         check_rate_limit(flask.request)
-        url = backend.create(flask.request.form['content'])
+        url = backend.write(flask.request.form['content'])
         return flask.redirect(url)
     raise BadRequest('Missing paste content')
 
