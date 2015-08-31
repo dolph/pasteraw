@@ -33,6 +33,10 @@ def check_rate_limit(request):
     last_check = current
     allowance += time_passed * (rate / per)
 
+    if throttle_count > MAX_THROTTLES:
+        app.logger.warning('Blocking %s' % ip)
+        raise RateLimitExceeded('Rate limit exceeded.')
+
     if allowance > rate:
         # A lot of time has passed since we last saw this IP, reset their
         # throttle.
@@ -45,11 +49,8 @@ def check_rate_limit(request):
             'Throttling %s (allowance=%s, last_check=%s, throttle_count=%s, '
             'retry_after=%s)' % (
                 ip, allowance, last_check, throttle_count, retry_after))
-        if throttle_count <= MAX_THROTTLES:
-            raise RateLimitExceeded(
-                'Rate limit exceeded. Retry after %s seconds.' % retry_after)
-        else:
-            raise RateLimitExceeded('Rate limit exceeded.')
+        raise RateLimitExceeded(
+            'Rate limit exceeded. Retry after %s seconds.' % retry_after)
     else:
         RATE_LIMIT_BY_IP[ip] = (allowance - 1, last_check, throttle_count)
         return True
