@@ -13,6 +13,9 @@ app.config.from_object('pasteraw.config')
 # override defaults with custom configuration
 app.config.from_pyfile('/etc/pasteraw.conf.py', silent=True)
 
+formatter = logging.Formatter(
+    '[%(asctime)s] %(name)s %(levelname)s: %(message)s')
+
 if app.debug:
     app.logger.setLevel(logging.DEBUG)
 else:
@@ -22,6 +25,7 @@ else:
         maxBytes=1000000,
         backupCount=3)
     file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
     app.logger.addHandler(file_handler)
 
 
