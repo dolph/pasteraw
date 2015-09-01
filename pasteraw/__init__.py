@@ -14,7 +14,7 @@ app.config.from_object('pasteraw.config')
 app.config.from_pyfile('/etc/pasteraw.conf.py', silent=True)
 
 formatter = logging.Formatter(
-    '[%(asctime)s] %(name)s %(levelname)s: %(message)s')
+    '[%(asctime)s] %(levelname)s: %(message)s')
 
 if app.debug:
     app.logger.setLevel(logging.DEBUG)
