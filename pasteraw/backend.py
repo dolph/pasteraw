@@ -7,6 +7,7 @@ import flask
 from pasteraw import app
 from pasteraw import base36
 from pasteraw import cdn
+from pasteraw import log
 
 
 class InvalidKey(ValueError):
@@ -60,22 +61,23 @@ def write(content):
     key = base36.re_encode(hex_key, starting_base=16)
 
     if cdn.upload(key, content):
-        app.logger.info('Uploaded paste to CDN: %s' % key)
+        log.info('Uploaded paste to CDN', key=key)
         return remote_url(key)
 
     # ensure the PASTE_DIR exists
     if app.config['PASTE_DIR'] is None:
         app.config['PASTE_DIR'] = tempfile.mkdtemp(prefix='pasteraw-')
-        app.logger.info('PASTE_DIR not set; created temporary dir: %s' %
-                        app.config['PASTE_DIR'])
+        log.info(
+            'PASTE_DIR not set; created temporary dir',
+            tmp_dir=app.config['PASTE_DIR'])
     elif not os.path.isdir(app.config['PASTE_DIR']):
-        msg = 'Directory does not exist: %s' % app.config['PASTE_DIR']
-        app.logger.info(msg)
+        msg = 'Paste directory does not exist'
+        log.warning(msg, paste_dir=app.config['PASTE_DIR'])
         raise IOError(msg)
 
     # CDN failed for whatever reason; write to a local file instead.
     path = _local_path(key)
     with open(path, 'w') as f:
         f.write(content)
-    app.logger.info('Wrote paste to local filesystem: %s' % key)
+    log.info('Wrote paste to local filesystem', key=key)
     return local_url(key)

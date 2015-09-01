@@ -2,6 +2,7 @@ import pyrax
 import pyrax.exceptions
 
 from pasteraw import app
+from pasteraw import log
 
 
 ENABLED = False
@@ -10,28 +11,27 @@ if app.config['CLOUD_ID_TYPE'] == 'rackspace':
     try:
         pyrax.set_setting('identity_type', app.config['CLOUD_ID_TYPE'])
 
-        app.logger.info(
-            'Setting region to %s' % app.config['CLOUD_REGION'])
+        log.info('Setting region', region=app.config['CLOUD_REGION'])
         pyrax.set_setting('region', app.config['CLOUD_REGION'])
         pyrax.set_setting('use_servicenet', True)
 
-        app.logger.info(
-            'Logging into rackspace as %s ...' %
-            app.config['RACKSPACE_USERNAME'])
+        log.info(
+            'Logging into Rackspace',
+            username=app.config['RACKSPACE_USERNAME'],
+            api_key=bool(app.config['RACKSPACE_API_KEY']))
         pyrax.set_credentials(
             app.config['RACKSPACE_USERNAME'],
             app.config['RACKSPACE_API_KEY'])
 
         ENABLED = True
     except (pyrax.exceptions.PyraxException, AttributeError) as e:
-        app.logger.warning(
-            'Unable to authenticate using pyrax: %s' % e)
+        log.warning('Unable to authenticate using pyrax', exception=e)
 elif app.config['CLOUD_ID_TYPE'] == 'keystone':
     raise NotImplementedError(
         'pyrax does not document how to provide keystone credentials '
         '"directly".')
 else:
-    app.logger.warning(
+    log.warning(
         'No credential type provided for CDN services (CLOUD_ID_TYPE).')
 
 
@@ -43,7 +43,7 @@ def upload(key, content):
         container = pyrax.cloudfiles.get_container(
             app.config['CDN_CONTAINER_NAME'])
     except pyrax.exceptions.ClientException as e:
-        app.logger.warning(e)
+        log.warning('Error getting CDN container', exception=e)
         return False
 
     try:
@@ -51,6 +51,6 @@ def upload(key, content):
         obj.change_content_type('text/plain; charset="utf-8"')
         return True
     except pyrax.exceptions.ClientException as e:
-        app.logger.warning(e)
+        log.warning('Error storing object', exception=e)
 
     return False
