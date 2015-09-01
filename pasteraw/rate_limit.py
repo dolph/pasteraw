@@ -11,6 +11,7 @@ except ImportError:
 
 from pasteraw import app
 from pasteraw import exceptions
+from pasteraw import log
 
 
 MAX_THROTTLES = 3
@@ -65,7 +66,7 @@ def throttle(request):
         allowance, last_check, throttle_count = _deserialize(db[ip])
 
         if throttle_count > MAX_THROTTLES:
-            app.logger.warning('Blocking %s' % ip)
+            log.warning('Deny', ip=ip)
             raise exceptions.RateLimitExceeded('Rate limit exceeded.')
 
         current = time.time()
@@ -83,18 +84,13 @@ def throttle(request):
             db[ip] = _serialize((allowance, last_check, throttle_count))
 
             retry_after = (1.0 - allowance) * (per / rate)
-            app.logger.warning(
-                'Throttling %s (allowance=%s, last_check=%s, '
-                'throttle_count=%s, retry_after=%s)' % (
-                    ip, allowance, last_check, throttle_count, retry_after))
+            log.warning('Deny', ip=ip, allowance=round(allowance, 1))
             raise exceptions.RateLimitExceeded(
                 'Rate limit exceeded. Retry after %s seconds.' % retry_after)
 
         allowance -= 1
         db[ip] = _serialize((allowance, last_check, throttle_count))
 
-        app.logger.warning(
-            'Allowing %s (allowance=%s, last_check=%s, throttle_count=%s)' % (
-                ip, allowance, last_check, throttle_count))
+        log.warning('Allow', ip=ip, allowance=round(allowance, 1))
 
         return True

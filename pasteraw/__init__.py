@@ -14,10 +14,13 @@ app.config.from_object('pasteraw.config')
 app.config.from_pyfile('/etc/pasteraw.conf.py', silent=True)
 
 formatter = logging.Formatter(
-    '[%(asctime)s] %(process)d.%(thread)d %(levelname)s: %(message)s')
+    fmt='[%(asctime)s] pid=%(process)d %(levelname)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S.%f')
 
 if app.debug:
-    app.logger.setLevel(logging.DEBUG)
+    for handler in app.logger.handlers:
+        handler.setLevel(logging.DEBUG)
+        handler.setFormatter(formatter)
 else:
     # enable logging to file in production
     file_handler = logging.handlers.RotatingFileHandler(
