@@ -55,7 +55,7 @@ def throttle(request):
         return True
 
     # try the actual remote address passed through by nginx first
-    ip = request.headers.get('X-Real-IP', request.remote_addr)
+    ip = str(request.headers.get('X-Real-IP', request.remote_addr))
 
     rate = 3.0  # unit: messages
     per = 60.0  # unit: seconds
