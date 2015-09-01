@@ -78,12 +78,10 @@ def throttle(request):
             # throttle.
             allowance = rate
 
-        app.logger.warning(
-            'Checking %s (allowance=%s, last_check=%s, throttle_count=%s)' % (
-                ip, allowance, last_check, throttle_count))
-
         if allowance < 1.0:
-            db[ip] = _serialize((allowance, last_check, throttle_count + 1))
+            throttle_count += 1
+            db[ip] = _serialize((allowance, last_check, throttle_count))
+
             retry_after = (1.0 - allowance) * (per / rate)
             app.logger.warning(
                 'Throttling %s (allowance=%s, last_check=%s, '
@@ -91,6 +89,12 @@ def throttle(request):
                     ip, allowance, last_check, throttle_count, retry_after))
             raise exceptions.RateLimitExceeded(
                 'Rate limit exceeded. Retry after %s seconds.' % retry_after)
-        else:
-            db[ip] = _serialize((allowance - 1, last_check, throttle_count))
-            return True
+
+        allowance -= 1
+        db[ip] = _serialize((allowance, last_check, throttle_count))
+
+        app.logger.warning(
+            'Allowing %s (allowance=%s, last_check=%s, throttle_count=%s)' % (
+                ip, allowance, last_check, throttle_count))
+
+        return True
