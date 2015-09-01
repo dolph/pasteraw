@@ -28,6 +28,10 @@ def check_rate_limit(request):
     RATE_LIMIT_BY_IP.setdefault(ip, (rate, time.time(), 0))
     allowance, last_check, throttle_count = RATE_LIMIT_BY_IP[ip]
 
+    app.logger.warning(
+        'Checking %s (allowance=%s, last_check=%s, throttle_count=%s)' % (
+            ip, allowance, last_check, throttle_count))
+
     current = time.time()
     time_passed = current - last_check
     last_check = current
