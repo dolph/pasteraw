@@ -14,6 +14,7 @@
         - python-dev
         - python-setuptools
         - python-virtualenv
+        - python-gdbm
         - supervisor
 
     - name: download get-pip

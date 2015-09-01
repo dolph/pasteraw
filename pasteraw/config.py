@@ -5,6 +5,7 @@ CDN_ENDPOINT = 'http://cdn.pasteraw.com'
 
 PASTE_DIR = None
 LOG_FILE = '/tmp/pasteraw.log'
+RATE_LIMIT_DBM_FILE = '/tmp/pasteraw.ratelimit.dbm'
 
 # if you don't override the secret key, one will be chosen for you
 SECRET_KEY = uuid.uuid4().hex
