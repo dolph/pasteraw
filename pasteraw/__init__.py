@@ -14,8 +14,8 @@ app.config.from_object('pasteraw.config')
 app.config.from_pyfile('/etc/pasteraw.conf.py', silent=True)
 
 formatter = logging.Formatter(
-    fmt='[%(asctime)s] pid=%(process)d %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S.%f')
+    fmt='[%(asctime)s.%(msecs)03d] pid=%(process)d %(levelname)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 if app.debug:
     for handler in app.logger.handlers:
