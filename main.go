@@ -7,10 +7,12 @@ import (
 )
 
 func init() {
-    http.HandleFunc("/", handler)
+    http.HandleFunc("/", IndexHandler)
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+    w.WriteHeader(http.StatusOK)
+    w.Header().Set("Content-Type", "text/plain")
     fmt.Fprint(w, "a plaintext pastebin service")
 }
 
