@@ -73,9 +73,7 @@ func (response TestResponse) AssertBodyContains(substr string) {
 }
 
 func TestIndexHandler(t *testing.T) {
-    handler := TestHandler{t, IndexHandler}
-    response := handler.GET("/", nil)
-
+    response := TestHandler{t, IndexHandler}.GET("/", nil)
     response.AssertStatusEquals(http.StatusOK)
     response.AssertBodyEquals("a plaintext pastebin service")
     response.AssertBodyContains("plaintext pastebin service")
