@@ -48,6 +48,7 @@ type TestResponse struct {
     r *httptest.ResponseRecorder
 }
 
+// Ensure that the response contains the expected status code.
 func (response TestResponse) AssertStatusEquals(expected int) {
     if response.r.Code != expected {
         response.t.Errorf(
@@ -56,6 +57,7 @@ func (response TestResponse) AssertStatusEquals(expected int) {
     }
 }
 
+// Ensure that the response body is exactly as expected.
 func (response TestResponse) AssertBodyEquals(expected string) {
     if actual := response.r.Body.String(); actual != expected {
         response.t.Errorf(
@@ -64,6 +66,7 @@ func (response TestResponse) AssertBodyEquals(expected string) {
     }
 }
 
+// Ensure that the response body contains a substring.
 func (response TestResponse) AssertBodyContains(substr string) {
     if actual := response.r.Body.String(); !strings.Contains(actual, substr) {
         response.t.Errorf(
