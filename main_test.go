@@ -84,6 +84,6 @@ func TestGetIndex(t *testing.T) {
 
 func TestPostIndex(t *testing.T) {
     response := TestHandler{t, IndexHandler}.POST("/", nil)
-    response.AssertStatusEquals(http.StatusNotFound)
-    response.AssertBodyEquals("404 Not Found")
+    response.AssertStatusEquals(http.StatusFound)
+    response.AssertBodyEquals("")
 }
