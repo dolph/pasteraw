@@ -6,6 +6,3 @@ cd $DIR/../
 
 # Run unit tests.
 go test
-
-# Run App Engine tests.
-goapp test
