@@ -6,14 +6,19 @@ import (
     "net/http/httptest"
 )
 
-func TestIndexHandler(t *testing.T) {
-    request, err := http.NewRequest("GET", "/", nil)
+func request(t *testing.T, handler func (http.ResponseWriter, *http.Request), method string, path string) *httptest.ResponseRecorder {
+    request, err := http.NewRequest(method, path, nil)
     if err != nil {
         t.Fatal(err)
     }
 
     response := httptest.NewRecorder()
-    http.HandlerFunc(IndexHandler).ServeHTTP(response, request)
+    http.HandlerFunc(handler).ServeHTTP(response, request)
+    return response
+}
+
+func TestIndexHandler(t *testing.T) {
+    response := request(t, IndexHandler, "GET", "/")
 
     if status := response.Code; status != http.StatusOK {
         t.Errorf(
