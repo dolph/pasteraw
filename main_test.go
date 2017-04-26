@@ -22,9 +22,13 @@ func (handler TestHandler) request(method string, path string) *httptest.Respons
     return response
 }
 
+func (handler TestHandler) GET(path string) *httptest.ResponseRecorder {
+    return handler.request("GET", path)
+}
+
 func TestIndexHandler(t *testing.T) {
     index_handler := TestHandler{t, IndexHandler}
-    response := index_handler.request("GET", "/")
+    response := index_handler.GET("/")
 
     if status := response.Code; status != http.StatusOK {
         t.Errorf(
