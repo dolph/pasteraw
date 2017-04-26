@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "net/http"
+    "google.golang.org/appengine"
 )
 
 func init() {
@@ -13,4 +14,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprint(w, "Hello, world!")
 }
 
-func main() {}
+func main() {
+    appengine.Main()
+}
