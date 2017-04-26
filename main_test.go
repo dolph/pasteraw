@@ -75,9 +75,15 @@ func (response TestResponse) AssertBodyContains(substr string) {
     }
 }
 
-func TestIndexHandler(t *testing.T) {
+func TestGetIndex(t *testing.T) {
     response := TestHandler{t, IndexHandler}.GET("/", nil)
     response.AssertStatusEquals(http.StatusOK)
     response.AssertBodyEquals("a plaintext pastebin service")
     response.AssertBodyContains("plaintext pastebin service")
+}
+
+func TestPostIndex(t *testing.T) {
+    response := TestHandler{t, IndexHandler}.POST("/", nil)
+    response.AssertStatusEquals(http.StatusNotFound)
+    response.AssertBodyEquals("404 Not Found")
 }
