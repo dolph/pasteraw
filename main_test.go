@@ -6,19 +6,25 @@ import (
     "net/http/httptest"
 )
 
-func request(t *testing.T, handler func (http.ResponseWriter, *http.Request), method string, path string) *httptest.ResponseRecorder {
+type TestHandler struct {
+    t *testing.T
+    f func (http.ResponseWriter, *http.Request)
+}
+
+func (handler TestHandler) request(method string, path string) *httptest.ResponseRecorder {
     request, err := http.NewRequest(method, path, nil)
     if err != nil {
-        t.Fatal(err)
+        handler.t.Fatal(err)
     }
 
     response := httptest.NewRecorder()
-    http.HandlerFunc(handler).ServeHTTP(response, request)
+    http.HandlerFunc(handler.f).ServeHTTP(response, request)
     return response
 }
 
 func TestIndexHandler(t *testing.T) {
-    response := request(t, IndexHandler, "GET", "/")
+    index_handler := TestHandler{t, IndexHandler}
+    response := index_handler.request("GET", "/")
 
     if status := response.Code; status != http.StatusOK {
         t.Errorf(
