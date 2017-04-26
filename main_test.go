@@ -4,6 +4,7 @@ import (
     "testing"
     "net/http"
     "net/http/httptest"
+    "strings"
 )
 
 type TestHandler struct {
@@ -50,7 +51,7 @@ type TestResponse struct {
 func (response TestResponse) AssertStatusEquals(expected int) {
     if response.r.Code != expected {
         response.t.Errorf(
-            "Handler returned wrong status code: got %v want %v",
+            "Handler returned unexpected status code: got `%v` want `%v`",
             response.r.Code, expected)
     }
 }
@@ -58,8 +59,16 @@ func (response TestResponse) AssertStatusEquals(expected int) {
 func (response TestResponse) AssertBodyEquals(expected string) {
     if actual := response.r.Body.String(); actual != expected {
         response.t.Errorf(
-            "Handler returned unexpected body: got %v want %v",
+            "Handler returned unexpected body: got `%v` want `%v`",
             actual, expected)
+    }
+}
+
+func (response TestResponse) AssertBodyContains(substr string) {
+    if actual := response.r.Body.String(); !strings.Contains(actual, substr) {
+        response.t.Errorf(
+            "Handler returned unexpected body: did not find `%v` in `%v`",
+            substr, actual)
     }
 }
 
@@ -69,4 +78,5 @@ func TestIndexHandler(t *testing.T) {
 
     response.AssertStatusEquals(http.StatusOK)
     response.AssertBodyEquals("a plaintext pastebin service")
+    response.AssertBodyContains("plaintext pastebin service")
 }
