@@ -11,10 +11,15 @@ type TestHandler struct {
     f func (http.ResponseWriter, *http.Request)
 }
 
-func (handler TestHandler) request(method string, path string) *httptest.ResponseRecorder {
+func (handler TestHandler) request(method string, path string, headers map[string]string) *httptest.ResponseRecorder {
     request, err := http.NewRequest(method, path, nil)
     if err != nil {
         handler.t.Fatal(err)
+    }
+
+    // Set request headers, if any.
+    for header, value := range headers {
+        request.Header.Set(header, value)
     }
 
     response := httptest.NewRecorder()
@@ -22,17 +27,17 @@ func (handler TestHandler) request(method string, path string) *httptest.Respons
     return response
 }
 
-func (handler TestHandler) GET(path string) *httptest.ResponseRecorder {
-    return handler.request("GET", path)
+func (handler TestHandler) GET(path string, headers map[string]string) *httptest.ResponseRecorder {
+    return handler.request("GET", path, headers)
 }
 
-func (handler TestHandler) POST(path string) *httptest.ResponseRecorder {
-    return handler.request("POST", path)
+func (handler TestHandler) POST(path string, headers map[string]string) *httptest.ResponseRecorder {
+    return handler.request("POST", path, headers)
 }
 
 func TestIndexHandler(t *testing.T) {
     handler := TestHandler{t, IndexHandler}
-    response := handler.GET("/")
+    response := handler.GET("/", nil)
 
     if status := response.Code; status != http.StatusOK {
         t.Errorf(
