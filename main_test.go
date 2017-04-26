@@ -31,8 +31,8 @@ func (handler TestHandler) POST(path string) *httptest.ResponseRecorder {
 }
 
 func TestIndexHandler(t *testing.T) {
-    index_handler := TestHandler{t, IndexHandler}
-    response := index_handler.GET("/")
+    handler := TestHandler{t, IndexHandler}
+    response := handler.GET("/")
 
     if status := response.Code; status != http.StatusOK {
         t.Errorf(
