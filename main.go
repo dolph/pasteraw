@@ -11,7 +11,7 @@ func init() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprint(w, "Hello, world!")
+    fmt.Fprint(w, "a plaintext pastebin service")
 }
 
 func main() {
