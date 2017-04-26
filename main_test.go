@@ -33,12 +33,12 @@ func (handler TestHandler) request(method string, path string, headers map[strin
 
 // Make a GET request to the HTTP handler, and return the response.
 func (handler TestHandler) GET(path string, headers map[string]string) TestResponse {
-    return handler.request("GET", path, headers)
+    return handler.request(http.MethodGet, path, headers)
 }
 
 // Make a POST request to the HTTP handler, and return the response.
 func (handler TestHandler) POST(path string, headers map[string]string) TestResponse {
-    return handler.request("POST", path, headers)
+    return handler.request(http.MethodPost, path, headers)
 }
 
 type TestResponse struct {

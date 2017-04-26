@@ -12,7 +12,7 @@ func init() {
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
-        case "GET":
+        case http.MethodGet:
             GetIndex(w, r)
         default:
             NotFound(w, r)
