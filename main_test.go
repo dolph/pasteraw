@@ -75,6 +75,15 @@ func (response TestResponse) AssertBodyContains(substr string) {
     }
 }
 
+// Ensure that the response contains a specific header.
+func (response TestResponse) AssertHeaderExists(header string) {
+    if _, ok := response.r.Header()[header]; !ok {
+        response.t.Errorf(
+            "Handler did not set header `%v`",
+            header)
+    }
+}
+
 func TestGetIndex(t *testing.T) {
     response := TestHandler{t, IndexHandler}.GET("/", nil)
     response.AssertStatusEquals(http.StatusOK)
@@ -85,5 +94,6 @@ func TestGetIndex(t *testing.T) {
 func TestPostIndex(t *testing.T) {
     response := TestHandler{t, IndexHandler}.POST("/", nil)
     response.AssertStatusEquals(http.StatusFound)
+    response.AssertHeaderExists("Location")
     response.AssertBodyEquals("")
 }
