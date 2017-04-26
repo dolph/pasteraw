@@ -26,6 +26,10 @@ func (handler TestHandler) GET(path string) *httptest.ResponseRecorder {
     return handler.request("GET", path)
 }
 
+func (handler TestHandler) POST(path string) *httptest.ResponseRecorder {
+    return handler.request("POST", path)
+}
+
 func TestIndexHandler(t *testing.T) {
     index_handler := TestHandler{t, IndexHandler}
     response := index_handler.GET("/")
