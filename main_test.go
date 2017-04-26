@@ -8,9 +8,12 @@ import (
 
 type TestHandler struct {
     t *testing.T
+
+    // The HTTP handler function to be tested.
     f func (http.ResponseWriter, *http.Request)
 }
 
+// Build an HTTP request, pass it to the HTTP handler, and return the response.
 func (handler TestHandler) request(method string, path string, headers map[string]string) *httptest.ResponseRecorder {
     request, err := http.NewRequest(method, path, nil)
     if err != nil {
@@ -27,10 +30,12 @@ func (handler TestHandler) request(method string, path string, headers map[strin
     return response
 }
 
+// Make a GET request to the HTTP handler, and return the response.
 func (handler TestHandler) GET(path string, headers map[string]string) *httptest.ResponseRecorder {
     return handler.request("GET", path, headers)
 }
 
+// Make a POST request to the HTTP handler, and return the response.
 func (handler TestHandler) POST(path string, headers map[string]string) *httptest.ResponseRecorder {
     return handler.request("POST", path, headers)
 }
