@@ -65,8 +65,7 @@ jobs:
       image_resource:
         type: docker-image
         source:
-          repository: python
-          tag: "2.7"
+          repository: dolphm/network-tools
       inputs:
       - name: repo
       run:
