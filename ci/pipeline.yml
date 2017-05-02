@@ -42,7 +42,7 @@ jobs:
       image_resource:
         type: docker-image
         source:
-          repository: "dolphm/ubuntu-google-cloud"
+          repository: dolphm/ubuntu-google-cloud
       inputs:
       - name: repo
       run:
